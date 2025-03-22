@@ -67,8 +67,7 @@ app.get('/authorize', async (req, res) => {
 
             if(!discordTokenRequest.ok) { throw error("discordTokenRequest NOT OK"); };
 
-            const discordTokenRequestJSON = await discordTokenRequest.json()
-            console.log("discordTokenRequestJSON", discordTokenRequestJSON)
+            const discordTokenRequestJSON = await discordTokenRequest.json();
 
 			const guildMemberRequest = await fetch(`https://discord.com/api/v10/users/@me/guilds/${config.checkInGuildId}/member`, {
                 method: 'GET',
@@ -80,8 +79,6 @@ app.get('/authorize', async (req, res) => {
             if(!guildMemberRequest.ok) { throw error("guildMemberRequest NOT OK"); };
 
 			const guildMemberJSON = await guildMemberRequest.json();
-
-            console.log("guildMemberJSON", guildMemberJSON)
             
             const hasDiscordRequiredId = guildMemberJSON.roles.includes(config.checkForRoleId);
             console.log("hasDiscordRequiredId", hasDiscordRequiredId);
@@ -98,7 +95,6 @@ app.get('/authorize', async (req, res) => {
                 });
                 if(!userEmailRequest.ok) { throw error("userEmailRequest NOT OK"); };
                 const userEmailRequestJSON = await userEmailRequest.json();
-                console.log("userEmailRequestJSON", userEmailRequestJSON)
                 const userEmail = userEmailRequestJSON.email;
                 const username = userEmailRequestJSON.username;
                 if(!userEmail) { return res.json({ "error": "You must authorize email" })};
