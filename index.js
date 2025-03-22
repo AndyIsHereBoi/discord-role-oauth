@@ -11,7 +11,7 @@ var database = {
         { "code": "RANDOM_CODE", "authorizedToken": "AUTHORIZED_TOKEN" }
     ],
     "authorizedTokens": [
-        { "token": "AUTHORIZED_TOKEN", "email": "TEST_EMAIL@andyishereboi.com", "username": "USERNAME_HERE" }
+        { "token": "AUTHORIZED_TOKEN", "email": "TEST_EMAIL@andyishereboi.com", "displayName": "USERNAME_HERE" }
     ]
 }
 
@@ -43,7 +43,7 @@ app.post("/codetotoken", async (req, res) => {
 
     if (foundCodeObject) {
         return res.json({
-            "token": foundCodeObject.authorizedToken
+            "access_token": foundCodeObject.authorizedToken
         });
     } else {
         return res.status(404).json({ error: "Code not found" });
@@ -53,7 +53,8 @@ app.post("/codetotoken", async (req, res) => {
 app.get("/getuserinfo", async (req, res) => {
     // WIKIJS EXCHANGING TOKEN FOR USER INFO
 
-    const tokenToFind = req.query.access_token;
+    const tokenToFind = req.query.access_token || req.headers.authorization;
+    console.log("tokenToFind", tokenToFind)
 
     if (!tokenToFind) {
         return res.status(400).json({ error: "Token parameter is missing" });
@@ -65,7 +66,7 @@ app.get("/getuserinfo", async (req, res) => {
     if (foundTokenObject) {
         return res.json({
             "email": foundTokenObject.email,
-            "username": foundTokenObject.username,
+            "displayName": foundTokenObject.username,
             "token" : foundTokenObject.token
         });
     };
