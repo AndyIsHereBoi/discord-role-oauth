@@ -5,6 +5,10 @@ const { error } = require('console');
 const { uuid: uuidv4 } = require("uuidv4");
 
 const app = express();
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
+    next();
+});
 
 var database = {
     "codes": [
@@ -13,20 +17,8 @@ var database = {
     "authorizedTokens": [
         { "token": "AUTHORIZED_TOKEN", "email": "TEST_EMAIL@andyishereboi.com", "displayName": "USERNAME_HERE" }
     ]
-}
+};
 
-
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
-    next();
-});
-
-
-app.get("/redirectdiscord", async (req, res) => {
-    // WIKIJS REIDRECTS HERE, THEN THIS REDIRECTS TO DISCORD
-
-    res.redirect(config.discordOauthUrl)
-});
 
 
 
@@ -47,34 +39,6 @@ app.post("/codetotoken", async (req, res) => {
         });
     } else {
         return res.status(404).json({ error: "Code not found" });
-    };
-});
-
-app.get("/getuserinfo", async (req, res) => {
-    // WIKIJS EXCHANGING TOKEN FOR USER INFO
-
-    var tokenToFind;
-    if(req.headers.authorization) {
-        tokenToFind = req.headers.authorization.replace("Bearer ", "").replace("bearer ", ""); // replace Bearer away so its just token
-        console.log("Token found in authorization")
-    };
-    if(!tokenToFind(tokenToFind = req.query.access_token))
-
-    console.log("tokenToFind", tokenToFind)
-
-    if (!tokenToFind) {
-        return res.status(400).json({ error: "Token parameter is missing" });
-    };
-
-    const foundTokenObject = database.authorizedTokens.find(item => item.token === tokenToFind);
-
-    
-    if (foundTokenObject) {
-        return res.json({
-            "email": foundTokenObject.email,
-            "displayName": foundTokenObject.username,
-            "token" : foundTokenObject.token
-        });
     };
 });
 
@@ -133,6 +97,7 @@ app.get('/authorize', async (req, res) => {
                 database.authorizedTokens.push({ "token": authorizedToken, "email": "TEST_EMAIL@andyishereboi.com", "username": "USERNAME_HERE" })
 
                 // END DATABASE CODE
+                console.log("database after update", database);
 
 
                 return res.redirect(`https://mcd.andyishereboi.com/login/437a0008-0bd3-410a-b58a-c7bab95f9c9f/callback?code=${randomCode}`);
@@ -151,8 +116,48 @@ app.get('/authorize', async (req, res) => {
 		};
 	};
     return res.sendFile('index.html', { root: '.' });
-
 });
+
+
+
+
+
+
+// WIKIJS REIDRECTS HERE, THEN THIS REDIRECTS TO DISCORD
+app.get("/redirectdiscord", async (req, res) => {
+
+    res.redirect(config.discordOauthUrl)
+});
+
+
+// WIKIJS EXCHANGING TOKEN FOR USER INFO
+app.get("/getuserinfo", async (req, res) => {
+
+    var tokenToFind;
+    if(req.headers.authorization) {
+        tokenToFind = req.headers.authorization.replace("Bearer ", "").replace("bearer ", ""); // replace Bearer away so its just token
+        console.log("Token found in authorization")
+    };
+    if(!tokenToFind(tokenToFind = req.query.access_token))
+
+    console.log("tokenToFind", tokenToFind)
+
+    if (!tokenToFind) {
+        return res.status(400).json({ error: "Token parameter is missing" });
+    };
+
+    const foundTokenObject = database.authorizedTokens.find(item => item.token === tokenToFind);
+
+    
+    if (foundTokenObject) {
+        return res.json({
+            "email": foundTokenObject.email,
+            "displayName": foundTokenObject.username,
+            "token" : foundTokenObject.token
+        });
+    };
+});
+
 
 
 
