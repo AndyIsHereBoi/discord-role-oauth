@@ -106,8 +106,6 @@ app.get('/authorize', async (req, res) => {
             const discordTokenRequestJSON = await discordTokenRequest.json()
             console.log("discordTokenRequestJSON", discordTokenRequestJSON)
 
-            if(!discordTokenRequestJSON.ok) { throw error("discordTokenRequestJSON NOT OK"); };
-
 			const guildMemberRequest = await fetch(`https://discord.com/api/v10/users/@me/guilds/${config.checkInGuildId}/member`, {
                 method: 'GET',
                 headers: {
@@ -118,8 +116,6 @@ app.get('/authorize', async (req, res) => {
             if(!guildMemberRequest.ok) { throw error("guildMemberRequest NOT OK"); };
 
 			const guildMemberJSON = await guildMemberRequest.json();
-
-            if(!guildMemberJSON.ok) { throw error("guildMemberJSON NOT OK"); };
             
             const hasDiscordRequiredId = guildMemberJSON.roles.includes(config.checkForRoleId);
             console.log("hasDiscordRequiredId", hasDiscordRequiredId);
