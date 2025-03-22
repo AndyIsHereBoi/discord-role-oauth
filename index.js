@@ -31,7 +31,7 @@ app.get("/redirectdiscord", async (req, res) => {
 
 
 app.post("/codetotoken", async (req, res) => {
-    console.log("req.headers.authorization", req.headers.authorization);
+    console.log("req.headers.authorization", req.headers)
     const codeToFind = req.query.code || req.headers.authorization;
 
     if (!codeToFind) {
