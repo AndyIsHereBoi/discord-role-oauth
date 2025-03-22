@@ -39,7 +39,7 @@ app.get('/', async (req, res) => {
             const hasDiscordRequiredId = guildMemberJSON.roles.includes(config.checkForRoleId);
             console.log("hasDiscordRequiredId", hasDiscordRequiredId);
             if(hasDiscordRequiredId) {
-                res.redirect("mcd.andyishereboi.com");
+                res.redirect("https://mcd.andyishereboi.com");
             };
             
 		} catch (error) {
