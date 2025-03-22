@@ -1,0 +1,23 @@
+{
+  "name": "wikijs-discord-role-auth",
+  "version": "1.0.0",
+  "description": "Authentications server for wikijs to use, Wikijs uses oauth to my server, my server checks the discord roles and redirects back.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndyIsHereBoi/wikijs-discord-role-auth.git"
+  },
+  "author": "AndyIsHereBoi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndyIsHereBoi/wikijs-discord-role-auth/issues"
+  },
+  "homepage": "https://github.com/AndyIsHereBoi/wikijs-discord-role-auth#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "undici": "^7.5.0"
+  }
+}
