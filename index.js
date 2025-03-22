@@ -23,8 +23,9 @@ var database = {
 
 
 app.post("/codetotoken", async (req, res) => {
-    console.log("req.headers.authorization", req.headers)
-    console.log("req.headers.query", req.query)
+    console.log(req);
+    console.log("req.headers", req.headers)
+    console.log("req.query", req.query)
     const codeToFind = req.query.code || req.headers.authorization;
 
     if (!codeToFind) {
