@@ -18,6 +18,7 @@
   "homepage": "https://github.com/AndyIsHereBoi/wikijs-discord-role-auth#readme",
   "dependencies": {
     "express": "^4.21.2",
-    "undici": "^7.5.0"
+    "undici": "^7.5.0",
+    "uuidv4": "^6.2.13"
   }
 }
