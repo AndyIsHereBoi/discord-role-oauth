@@ -4,7 +4,7 @@ const config = require('./config.json');
 
 const app = express();
 
-app.get('/', async (req, res) => {
+app.get('/authorize', async (req, res) => {
 	const code = req.query.code;
 
 	if (code) {
@@ -45,10 +45,10 @@ app.get('/', async (req, res) => {
 		} catch (error) {
 			// NOTE: An unauthorized token will not throw an error
 			console.error(error);
+            return res.sendFile('index.html', { root: '.' });
 		};
 	};
 
-	return res.sendFile('index.html', { root: '.' });
 });
 
 
