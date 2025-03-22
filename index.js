@@ -17,7 +17,7 @@ var database = {
 
 
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)} ${req.headers.find(header => header.name == "authorization")}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
     next();
 });
 
