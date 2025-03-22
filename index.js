@@ -26,15 +26,16 @@ app.get('/', async ({ query }, response) => {
             });
 
             const discordTokenRequestJSON = await discordTokenRequest.json()
+            console.log("discordTokenRequestJSON", discordTokenRequestJSON)
 
-			const guildMemberRequest = await request(`https://discord.com/api/v10/users/@me/guilds/${config.checkInGuildId}/member`, {
+			const guildMemberRequest = await fetch(`https://discord.com/api/v10/users/@me/guilds/${config.checkInGuildId}/member`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `${discordTokenRequestJSON.token_type} ${discordTokenRequestJSON.access_token}`
                 },
             });
 
-			const guildMemberJSON = await guildMemberRequest.body.json();
+			const guildMemberJSON = await guildMemberRequest.json();
             const hasDiscordRequiredId = guildMemberJSON.roles.includes(config.checkForRoleId);
             console.log("hasDiscordRequiredId", hasDiscordRequiredId);
             
