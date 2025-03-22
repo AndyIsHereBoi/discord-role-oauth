@@ -5,6 +5,7 @@ const { error } = require('console');
 const { uuid: uuidv4 } = require("uuidv4");
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
     next();
@@ -26,6 +27,7 @@ app.post("/codetotoken", async (req, res) => {
     console.log(req);
     console.log("req.headers", req.headers)
     console.log("req.query", req.query)
+    console.log("req.body", req.body)
     const codeToFind = req.query.code || req.headers.authorization;
 
     if (!codeToFind) {
