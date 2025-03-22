@@ -17,7 +17,7 @@ var database = {
 
 
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)} ${req.headers.find(header => header.name == "authorization")}`);
     next();
 });
 
@@ -30,7 +30,7 @@ app.get("/redirectdiscord", async (req, res) => {
 
 
 
-app.get("/codetotoken", async (req, res) => {
+app.post("/codetotoken", async (req, res) => {
     const codeToFind = req.query.code;
 
     if (!codeToFind) {
