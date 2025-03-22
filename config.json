@@ -1,7 +1,7 @@
 {
 	"clientId": "1315133439175036948",
 	"clientSecret": "Sqn02fTs28-cGASsU_12LyHvyypwrY3c",
-	"port": 53134,
+	"port": 25042,
 	"redirect_uri": "http://135.181.116.175:25042/",
 	"checkInGuildId": "1299444823476142201",
 	"checkForRoleId": "1345353595201257534"
