@@ -90,13 +90,26 @@ app.get('/authorize', async (req, res) => {
             // USER PASSED ALL CHECKS
             if(hasDiscordRequiredId) {
 
+                const userEmailRequest = await fetch(`https://discord.com/api/v10/users/@me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `${discordTokenRequestJSON.token_type} ${discordTokenRequestJSON.access_token}`
+                    },
+                });
+                if(!userEmailRequest.ok) { throw error("userEmailRequest NOT OK"); };
+                const userEmailRequestJSON = userEmailRequest.json;
+
+                const userEmail = userEmailRequestJSON.email;
+                const username = userEmailRequestJSON.username;
+                if(!userEmail) { return res.json({ "error": "You must authorize email" })};
+    
 
                 // START DATABASE CODE
 
                 const randomCode = uuidv4();
                 const authorizedToken = uuidv4();
                 database.codes.push({ "code": randomCode, "authorizedToken": authorizedToken });
-                database.authorizedTokens.push({ "token": authorizedToken, "email": "TEST_EMAIL@andyishereboi.com", "username": "USERNAME_HERE" })
+                database.authorizedTokens.push({ "token": authorizedToken, "email": userEmail, "username": username });
 
                 // END DATABASE CODE
                 console.log("database after update", database);
