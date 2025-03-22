@@ -24,11 +24,8 @@ var database = {
 
 
 app.post("/codetotoken", async (req, res) => {
-    console.log(req);
-    console.log("req.headers", req.headers)
-    console.log("req.query", req.query)
-    console.log("req.body", req.body)
-    const codeToFind = req.query.code || req.headers.authorization;
+    // requres form url encoded thing
+    const codeToFind = req.query.code || req.headers.authorization || req.body.code;
 
     if (!codeToFind) {
         return res.status(400).json({ error: "Code parameter is missing" });
