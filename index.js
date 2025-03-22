@@ -15,6 +15,13 @@ var database = {
     ]
 }
 
+
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
+    next();
+});
+
+
 app.get("/redirectdiscord", async (req, res) => {
     // WIKIJS REIDRECTS HERE, THEN THIS REDIRECTS TO DISCORD
 
