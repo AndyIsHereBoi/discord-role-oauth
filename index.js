@@ -48,6 +48,7 @@ app.get('/authorize', async (req, res) => {
             return res.sendFile('index.html', { root: '.' });
 		};
 	};
+    return res.sendFile('index.html', { root: '.' });
 
 });
 
