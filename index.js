@@ -53,7 +53,13 @@ app.post("/codetotoken", async (req, res) => {
 app.get("/getuserinfo", async (req, res) => {
     // WIKIJS EXCHANGING TOKEN FOR USER INFO
 
-    const tokenToFind = req.query.access_token || req.headers.authorization;
+    var tokenToFind;
+    if(req.headers.authorization) {
+        tokenToFind = req.headers.authorization.replace("Bearer ", "").replace("bearer ", ""); // replace Bearer away so its just token
+        console.log("Token found in authorization")
+    };
+    if(!tokenToFind(tokenToFind = req.query.access_token))
+
     console.log("tokenToFind", tokenToFind)
 
     if (!tokenToFind) {
