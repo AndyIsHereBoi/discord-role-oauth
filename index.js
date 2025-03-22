@@ -98,7 +98,7 @@ app.get('/authorize', async (req, res) => {
                 });
                 if(!userEmailRequest.ok) { throw error("userEmailRequest NOT OK"); };
                 const userEmailRequestJSON = userEmailRequest.json;
-
+                console.log("userEmailRequestJSON", userEmailRequestJSON)
                 const userEmail = userEmailRequestJSON.email;
                 const username = userEmailRequestJSON.username;
                 if(!userEmail) { return res.json({ "error": "You must authorize email" })};
