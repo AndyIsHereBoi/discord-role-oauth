@@ -127,8 +127,8 @@ app.get('/authorize', async (req, res) => {
 
                 // START DATABASE CODE
 
-                const randomCode = uuid();
-                const authorizedToken = uuid();
+                const randomCode = uuidv4();
+                const authorizedToken = uuidv4();
                 database.codes.push({ "code": randomCode, "authorizedToken": authorizedToken });
                 database.authorizedTokens.push({ "token": authorizedToken, "email": "TEST_EMAIL@andyishereboi.com", "username": "USERNAME_HERE" })
 
