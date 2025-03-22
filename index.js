@@ -31,7 +31,8 @@ app.get("/redirectdiscord", async (req, res) => {
 
 
 app.post("/codetotoken", async (req, res) => {
-    const codeToFind = req.query.code;
+    console.log("req.headers.authorization", req.headers.authorization);
+    const codeToFind = req.query.code || req.headers.authorization;
 
     if (!codeToFind) {
         return res.status(400).json({ error: "Code parameter is missing" });
