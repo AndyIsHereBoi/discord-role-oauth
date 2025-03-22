@@ -61,7 +61,7 @@ app.get('/authorize', async (req, res) => {
                     grant_type: 'authorization_code',
                     code: code,
                     redirect_uri: config.redirect_uri,
-					scope: 'identify guilds.members.read',
+					scope: 'identify email guilds.members.read',
                 }),
             });
 
@@ -80,6 +80,8 @@ app.get('/authorize', async (req, res) => {
             if(!guildMemberRequest.ok) { throw error("guildMemberRequest NOT OK"); };
 
 			const guildMemberJSON = await guildMemberRequest.json();
+
+            console.log("guildMemberJSON", guildMemberJSON)
             
             const hasDiscordRequiredId = guildMemberJSON.roles.includes(config.checkForRoleId);
             console.log("hasDiscordRequiredId", hasDiscordRequiredId);
@@ -99,12 +101,13 @@ app.get('/authorize', async (req, res) => {
                 // END DATABASE CODE
                 console.log("database after update", database);
 
-
+                console.log("User allowed to login")
                 return res.redirect(`https://mcd.andyishereboi.com/login/437a0008-0bd3-410a-b58a-c7bab95f9c9f/callback?code=${randomCode}`);
             } else {
                 // USER FAILED CHECKS
+                console.log("User NOT allowed to login");
                 return res.json({
-                    "error": "You are not authorized to log in."
+                    "error": "You are not authorized to log in. (mcdauth)"
                 });
             };
 		} catch (error) {
