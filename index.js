@@ -4,8 +4,8 @@ const config = require('./config.json');
 
 const app = express();
 
-app.get('/', async ({ query }, response) => {
-	const code = query.code;
+app.get('/', async (req, res) => {
+	const code = req.query.code;
 
 	if (code) {
         console.log("code", code)
@@ -38,14 +38,17 @@ app.get('/', async ({ query }, response) => {
 			const guildMemberJSON = await guildMemberRequest.json();
             const hasDiscordRequiredId = guildMemberJSON.roles.includes(config.checkForRoleId);
             console.log("hasDiscordRequiredId", hasDiscordRequiredId);
+            if(hasDiscordRequiredId) {
+                res.redirect("mcd.andyishereboi.com");
+            };
             
 		} catch (error) {
 			// NOTE: An unauthorized token will not throw an error
 			console.error(error);
-		}
-	}
+		};
+	};
 
-	return response.sendFile('index.html', { root: '.' });
+	return res.sendFile('index.html', { root: '.' });
 });
 
 
