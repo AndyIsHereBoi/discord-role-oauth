@@ -152,6 +152,7 @@ app.get("/getuserinfo", async (req, res) => {
     };
     if(!tokenToFind) {
         tokenToFind = req.query.access_token;
+        console.log("Token found in query")
     };
 
     console.log("tokenToFind", tokenToFind)
@@ -166,8 +167,8 @@ app.get("/getuserinfo", async (req, res) => {
     if (foundTokenObject) {
         return res.json({
             "email": foundTokenObject.email,
-            "displayName": foundTokenObject.username,
-            "token" : foundTokenObject.token
+            "displayName": foundTokenObject.username
+            "userId": foundTokenObject.id
         });
     };
 });
