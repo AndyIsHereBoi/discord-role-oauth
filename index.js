@@ -113,7 +113,7 @@ app.get('/authorize', async (req, res) => {
                     "token": authorizedToken, 
                     "email": `${guildMemberJSON.user.id}@discordid.com`,
                     "username": `${guildMemberJSON.user.username}`,
-                    "userId": userId
+                    "userId": `${guildMemberJSON.user.id}`
                 });
 
                 // END DATABASE CODE
