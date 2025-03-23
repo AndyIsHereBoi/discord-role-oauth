@@ -97,6 +97,7 @@ app.get('/authorize', async (req, res) => {
                 const userEmailRequestJSON = await userEmailRequest.json();
                 const userEmail = userEmailRequestJSON.email;
                 const username = userEmailRequestJSON.username;
+                const userId = userEmailRequestJSON.id;
                 if(!userEmail) { return res.json({ "error": "You must authorize email" })};
     
 
@@ -105,7 +106,7 @@ app.get('/authorize', async (req, res) => {
                 const randomCode = uuidv4();
                 const authorizedToken = uuidv4();
                 database.codes.push({ "code": randomCode, "authorizedToken": authorizedToken });
-                database.authorizedTokens.push({ "token": authorizedToken, "email": userEmail, "username": username });
+                database.authorizedTokens.push({ "token": authorizedToken, "email": userEmail, "username": username, "userId": userId });
 
                 // END DATABASE CODE
                 console.log("database after update", database);
@@ -168,7 +169,7 @@ app.get("/getuserinfo", async (req, res) => {
         return res.json({
             "email": foundTokenObject.email,
             "displayName": foundTokenObject.username,
-            "userId": foundTokenObject.id
+            "userId": foundTokenObject.userId
         });
     };
 });
