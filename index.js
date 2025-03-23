@@ -167,7 +167,7 @@ app.get("/getuserinfo", async (req, res) => {
     if (foundTokenObject) {
         return res.json({
             "email": foundTokenObject.email,
-            "displayName": foundTokenObject.username
+            "displayName": foundTokenObject.username,
             "userId": foundTokenObject.id
         });
     };
