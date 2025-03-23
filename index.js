@@ -95,6 +95,7 @@ app.get('/authorize', async (req, res) => {
                 // });
                 // if(!userEmailRequest.ok) { throw error("userEmailRequest NOT OK"); };
                 // const userEmailRequestJSON = await userEmailRequest.json();
+                // const userEmail = userEmailRequestJSON.email;
                 // const username = userEmailRequestJSON.username;
                 // const userId = userEmailRequestJSON.id;
                 // if(!userEmail) { return res.json({ "error": "You must authorize email" })};
@@ -104,17 +105,24 @@ app.get('/authorize', async (req, res) => {
 
                 const randomCode = uuidv4();
                 const authorizedToken = uuidv4();
-                database.codes.push({ "code": randomCode, "authorizedToken": authorizedToken });
-                database.authorizedTokens.push({ "token": authorizedToken, "email": `${foundTokenObject.userId}@discordid.com`, "username": username, "userId": userId });
+                database.codes.push({
+                    "code": randomCode,
+                    "authorizedToken": authorizedToken
+                });
+                database.authorizedTokens.push({
+                    "token": authorizedToken, 
+                    "email": `${guildMemberJSON.user.id}@discordid.com`,
+                    "username": `${guildMemberJSON.user.username}`,
+                    "userId": userId
+                });
 
                 // END DATABASE CODE
                 console.log("database after update", database);
 
-                console.log("User allowed to login")
                 return res.redirect(`https://mcd.andyishereboi.com/login/437a0008-0bd3-410a-b58a-c7bab95f9c9f/callback?code=${randomCode}`);
             } else {
                 // USER FAILED CHECKS
-                console.log("User NOT allowed to login");
+                console.log("User NOT allowed to login. username:", guildMemberJSON.user.username);
                 return res.json({
                     "error": "You are not authorized to log in. (mcdauth)"
                 });
