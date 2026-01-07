@@ -1,0 +1,9 @@
+{
+	"clientId": "DISCORD_CLIENT_ID",
+	"clientSecret": "DISCORD_CLIENT_SECRET",
+	"port": HTTP_PORT,
+	"redirect_uri": "DISCORD_REDIRECT_URI",
+	"checkInGuildId": "DISCORD_GUILD_ID",
+	"checkForRoleId": "DISCORD_ROLE_ID",
+	"discordOauthUrl": "OAUTH_URL_WITH_identify_and_guild_member_read_permissions"
+}
