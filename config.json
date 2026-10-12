@@ -1,8 +1,11 @@
 {
 	"clientId": "DISCORD_CLIENT_ID",
 	"clientSecret": "DISCORD_CLIENT_SECRET",
-	"port": HTTP_PORT,
+	"host": "https://THIS_SITE_HOSTNAME.com",
+	"port": "HTTP_PORT",
 	"redirect_uri": "DISCORD_REDIRECT_URI",
+	"discordApiBaseUrl": "https://discord.com/api/v10",
+	"wikiJsRedirectUrl": "CALLBACK_URL_FOR_APP_USING_THIS_SERVER",
 	"checkInGuildId": "DISCORD_GUILD_ID",
 	"checkForRoleId": "DISCORD_ROLE_ID",
 	"discordOauthUrl": "OAUTH_URL_WITH_identify_and_guild_member_read_permissions"

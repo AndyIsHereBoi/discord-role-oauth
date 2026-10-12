@@ -3,11 +3,14 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>Redirecting to Discord...</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <a href="https://discord.com/oauth2/authorize?client_id=1315133439175036948&response_type=code&redirect_uri=https%3A%2F%2Fmcdauth.andyishereboi.com%2Fauthorize&scope=identify+guilds.members.read" class="btn btn-secondary" bit-lg disabled">secondary link</button>
+    <!-- Immediately hand off to the server, which redirects to config.discordOauthUrl -->
+    <meta http-equiv="refresh" content="0; url=/redirectdiscord">
+    <script>window.location.replace("/redirectdiscord");</script>
 </head>
 <body>
     
+    <p>Redirecting to Discord...</p>
 </body>
 </html>

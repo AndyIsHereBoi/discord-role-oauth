@@ -1,11 +1,24 @@
-const { request, fetch } = require('undici');
+const { fetch } = require('undici');
 const express = require('express');
 const config = require('./config.json');
-const { error } = require('console');
 const { uuid: uuidv4 } = require("uuidv4");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+
+// ---- Everything configurable is resolved once, when the server starts ----
+// No domains or URLs should be hardcoded below; they all come from config.json.
+const discordApiBaseUrl = String(config.discordApiBaseUrl || "").replace(/\/+$/, "");
+const redirectUri = config.redirect_uri || `${config.host}/authorize`;
+const wikiJsRedirectUrl = config.wikiJsRedirectUrl || `${config.host}/callback`;
+const discordOauthUrl = config.discordOauthUrl;
+
+if (!discordApiBaseUrl) console.warn("[config] discordApiBaseUrl is not set");
+if (!config.clientId || !config.clientSecret) console.warn("[config] clientId / clientSecret are not set");
+if (!discordOauthUrl) console.warn("[config] discordOauthUrl is not set - /redirectdiscord will not work");
+
+console.log(`[config] redirect URI: ${redirectUri}`);
+console.log(`[config] Wiki.js redirect URL: ${wikiJsRedirectUrl}`);
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} ${JSON.stringify(req.query)}`);
     next();
@@ -34,8 +47,11 @@ app.post("/codetotoken", async (req, res) => {
     const foundCodeObject = database.codes.find(item => item.code === codeToFind);
 
     if (foundCodeObject) {
+        // Return a standard OAuth2 token response - clients require `token_type`.
         return res.json({
-            "access_token": foundCodeObject.authorizedToken
+            "access_token": foundCodeObject.authorizedToken,
+            "token_type": "Bearer",
+            "expires_in": 3600
         });
     } else {
         return res.status(404).json({ error: "Code not found" });
@@ -50,7 +66,7 @@ app.get('/authorize', async (req, res) => {
 	if (code) {
         console.log("code", code)
 		try {
-            const discordTokenRequest = await fetch('https://discord.com/api/v10/oauth2/token', {
+            const discordTokenRequest = await fetch(`${discordApiBaseUrl}/oauth2/token`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -60,23 +76,23 @@ app.get('/authorize', async (req, res) => {
 					client_secret: config.clientSecret,
                     grant_type: 'authorization_code',
                     code: code,
-                    redirect_uri: config.redirect_uri,
+                    redirect_uri: redirectUri,
 					scope: 'identify guilds.members.read',
                 }),
             });
 
-            if(!discordTokenRequest.ok) { throw error("discordTokenRequest NOT OK"); };
+            if(!discordTokenRequest.ok) { throw new Error("discordTokenRequest NOT OK"); };
 
             const discordTokenRequestJSON = await discordTokenRequest.json();
 
-			const guildMemberRequest = await fetch(`https://discord.com/api/v10/users/@me/guilds/${config.checkInGuildId}/member`, {
+			const guildMemberRequest = await fetch(`${discordApiBaseUrl}/users/@me/guilds/${config.checkInGuildId}/member`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `${discordTokenRequestJSON.token_type} ${discordTokenRequestJSON.access_token}`
                 },
             });
 
-            if(!guildMemberRequest.ok) { throw error("guildMemberRequest NOT OK"); };
+            if(!guildMemberRequest.ok) { throw new Error("guildMemberRequest NOT OK"); };
 
 			const guildMemberJSON = await guildMemberRequest.json();
             
@@ -119,12 +135,18 @@ app.get('/authorize', async (req, res) => {
                 // END DATABASE CODE
                 console.log("database after update", database);
 
-                return res.redirect(`https://mcd.andyishereboi.com/login/437a0008-0bd3-410a-b58a-c7bab95f9c9f/callback?code=${randomCode}`);
+                // Send the client's `state` back to it along with the code (OAuth requires a state round-trip).
+                const callbackUrl = new URL(wikiJsRedirectUrl);
+                callbackUrl.searchParams.set("code", randomCode);
+                if (req.query.state) {
+                    callbackUrl.searchParams.set("state", String(req.query.state));
+                }
+                return res.redirect(callbackUrl.toString());
             } else {
                 // USER FAILED CHECKS
                 console.log("User NOT allowed to login. username:", guildMemberJSON.user.username);
                 return res.json({
-                    "error": "You are not authorized to log in. (mcdauth)"
+                    "error": "You are not authorized to log in. (discordroleauth)"
                 });
             };
 		} catch (error) {
@@ -143,10 +165,21 @@ app.get('/authorize', async (req, res) => {
 
 
 
-// WIKIJS REIDRECTS HERE, THEN THIS REDIRECTS TO DISCORD
+// CLIENT REDIRECTS HERE, THEN THIS REDIRECTS TO DISCORD
 app.get("/redirectdiscord", async (req, res) => {
 
-    res.redirect(config.discordOauthUrl)
+    // Forward the client's OAuth `state` to Discord; Discord echoes it back to /authorize.
+    let authorizeUrl;
+    try {
+        authorizeUrl = new URL(discordOauthUrl);
+    } catch {
+        return res.redirect(discordOauthUrl);
+    }
+    if (req.query.state) {
+        authorizeUrl.searchParams.set("state", String(req.query.state));
+    }
+
+    res.redirect(authorizeUrl.toString());
 });
 
 
@@ -179,9 +212,11 @@ app.get("/getuserinfo", async (req, res) => {
             "userId": foundTokenObject.userId
         });
     };
+
+    return res.status(404).json({ error: "Token not found" });
 });
 
 
 
 
-app.listen(config.port, () => console.log(`App listening at http://localhost:${config.port}`));
+app.listen(config.port, () => console.log(`App listening at ${config.host}:${config.port}`));
